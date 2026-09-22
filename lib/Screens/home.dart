@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project_3/Screens/app_settings.dart';
 
 import 'products.dart';
 import 'settings.dart';
-
+//MyHome
 class MyHome extends StatefulWidget {
   const MyHome({super.key});
 
@@ -81,16 +82,87 @@ class _HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return Container(
-              padding: const EdgeInsets.all(16),
-              child: const Center(
-                child: Text(
-                  "Home Tab",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+            Text("Welcome to ShopSmart",style: TextStyle(
+              fontSize: 24,
+              color: AppColors.titleColor,
+            ),),
+
+            SizedBox(height: 12,),
+
+            Text("We are here to shop something...",style: TextStyle(
+              fontSize: 18,
+              color: AppColors.subTitleColor,
+            ),),
+
+            SizedBox(height: 12,),
+
+            Row(
+
+              children: [
+                Expanded(child: ProductCard(icon: Icons.shopping_cart_outlined, 
+              value: '12', 
+              title: 'Orders', 
+              color: AppColors.primaryColor)),
+
+              SizedBox(width: 20,),
+
+              Expanded(child: ProductCard(icon: Icons.favorite_outline, 
+              value: '10', 
+              title: 'WishList', 
+              color: AppColors.redColor)),
+              ]
+
+            ),
+
+          ],
+        ),
       );
   
   }
 }
 
+class ProductCard extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String title;
+  final Color color;
+
+  const ProductCard({super.key,
+  required this.icon,
+  required this.value,
+  required this.title,
+  required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return  Container(
+      decoration: BoxDecoration(
+        color: Colors.yellow,
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon,color: color,size: 34,),
+          SizedBox(height: 16,),
+          Text(value,style: TextStyle(
+            fontSize: 18,
+            color: AppColors.titleColor
+          ),),
+          SizedBox(height: 16,),
+          Text(title,style: TextStyle(
+            fontSize: 14,
+            color: AppColors.subTitleColor),)
+        ],
+      ),
+    );
+  }
+}

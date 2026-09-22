@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'app_settings.dart';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
@@ -14,12 +16,49 @@ class _MyLoginState extends State<MyLogin> {
 
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _rememberMe = false;
+
+  final SharedPreferencesAsync pref = SharedPreferencesAsync();
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  // Load saved credentials if "Remember Me" was previously checked
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedRememberMe = prefs.getBool('remember_me') ?? false;
+    if (savedRememberMe) {
+      setState(() {
+        _rememberMe = true;
+        _emailController.text = prefs.getString('saved_email') ?? '';
+        _passwordController.text = prefs.getString('saved_password') ?? '';
+      });
+    }
+  }
+
+  //Save or clear credentials based on checkbox state
+  Future<void> _saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setBool('remember_me', true);
+      await prefs.setString('saved_email', _emailController.text.trim());
+      await prefs.setString('saved_password', _passwordController.text);
+    } else {
+      await prefs.setBool('remember_me', false);
+      await prefs.remove('saved_email');
+      await prefs.remove('saved_password');
+    }
   }
 
   String? _validateEmail(String? value) {
@@ -56,6 +95,10 @@ class _MyLoginState extends State<MyLogin> {
     try {
       // TODO: replace with your actual auth call
       // await Future.delayed(const Duration(seconds: 2));
+
+      // Save or clear credentials based on "Remember Me" checkbox
+      await _saveCredentials();
+
       Navigator.pushReplacementNamed(context, 'home');
       // On success, navigate somewhere:
       // Navigator.pushReplacementNamed(context, 'home');
@@ -178,23 +221,51 @@ class _MyLoginState extends State<MyLogin> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
 
+                        // Remember Me checkbox
+                       Padding(padding: const EdgeInsetsGeometry.only(top: 8.0),
+                       child: Row(children: [
+                        SizedBox(height: 30,width: 30,
+                        child: Checkbox(
+                          activeColor: Colors.grey,
+                          checkColor: Colors.black,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          value: _rememberMe, 
+                          onChanged:(bool? isSelected){
+                            setState(() {
+                              _rememberMe = isSelected ?? false;
+                            });
+                          }),),
+
+                        const SizedBox(width: 16),
+
+
+                        GestureDetector(
+                        onTap: (){
+                          _rememberMe = !_rememberMe;
+                        },
+                        child: Text("Remember me"),
+                      ),
+                       ],),
+                       ),
+                     
+
+                        const SizedBox(height: 16),
                         // Sign in row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               "Sign In",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.primaryColor,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             CircleAvatar(
                               radius: 30,
-                              backgroundColor: Colors.blueGrey,
+                              backgroundColor: AppColors.primaryColor,
                               child: _isLoading
                                   ? const SizedBox(
                                       width: 24,

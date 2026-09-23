@@ -20,7 +20,6 @@ class _MyLoginState extends State<MyLogin> {
 
   final SharedPreferencesAsync pref = SharedPreferencesAsync();
 
-
   @override
   void initState() {
     super.initState();

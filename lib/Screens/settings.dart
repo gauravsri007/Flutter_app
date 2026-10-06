@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 // ---------------- Settings tab ----------------
@@ -48,13 +49,16 @@ class SettingsTab extends StatelessWidget {
                     child: const Text("Cancel"),
                   ),
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.clear();
+
                       Navigator.pop(context);
                       Navigator.pushNamedAndRemoveUntil(
-      context,
-      'login',
-      (route) => false,
-    );
+                        context,
+                        'login',
+                        (route) => false,
+                      );
                       // TODO: clear session, navigate to login
                     },
                     child: const Text("Log Out",

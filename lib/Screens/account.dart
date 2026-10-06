@@ -32,52 +32,30 @@ class AccountGridView extends StatelessWidget {
       body: 
       Stack(
         children:[
-          Container(
-          child: Text("Hi"),
+
+      GridView.builder(
+        shrinkWrap: true,
+        // physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        itemCount: items.length,
+      
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 32,
+          mainAxisSpacing: 40,
+          childAspectRatio: 1.45,
         ),
-        GridView.count(
-          crossAxisCount: 3,
-          children: [
-            Container(
-              color: Colors.green,
-            ),
-            Container(
-              color: Colors.red,
-            ),
-             Container(
-              color: Colors.yellow,
-            ),
-            Container(
-              color: Colors.brown,
-            )
-
-
-          ],
-        )
-        ]
+      
+        itemBuilder: (context, index) {
+          return _GridItem(
+            icon: items[index]['icon'] as IconData,
+            title: items[index]['title'] as String,
+          );
+        },
       ),
-
-      // GridView.builder(
-      //   shrinkWrap: true,
-      //   // physics: const NeverScrollableScrollPhysics(),
-      //   padding: const EdgeInsets.all(16),
-      //   itemCount: items.length,
-      
-      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //     crossAxisCount: 2,
-      //     crossAxisSpacing: 32,
-      //     mainAxisSpacing: 40,
-      //     childAspectRatio: 1.45,
-      //   ),
-      
-      //   itemBuilder: (context, index) {
-      //     return _GridItem(
-      //       icon: items[index]['icon'] as IconData,
-      //       title: items[index]['title'] as String,
-      //     );
-      //   },
-      // ),
-    );
+    
+    ]
+    ));
   }
 }
 
